@@ -22,6 +22,8 @@ RUN set -x \
   && curl -sSL $DANTE_URL -o $DANTE_FILE \
   && echo "$DANTE_SHA *$DANTE_FILE" | sha256sum -c \
   && tar xzf $DANTE_FILE --strip 1 \
+  && curl "http://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.guess;hb=HEAD" -o config.guess \
+  && curl "http://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.sub;hb=HEAD" -o config.sub \
   && ac_cv_func_sched_setscheduler=no ./configure \
     --prefix=/usr \
     --sysconfdir=/etc \
