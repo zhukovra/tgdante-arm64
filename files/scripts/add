@@ -1,0 +1,36 @@
+#!/bin/sh
+
+set -e
+
+USER_NAME=${1}
+PASSWORD0=${2}
+
+if [ -f "/tmp/dante_port" ]; then
+        PORT=`cat /tmp/dante_port`
+else
+        PORT="1080"
+fi
+
+if [ x"$USER_NAME" = "x" ]; then
+    echo "Usage:"
+    echo "$0 USER [PASSWORD]"
+    exit 1
+fi
+
+if [ x"${PASSWORD0}" = "x" ]; then
+    PASSWORD=`apg -M NCL -m 16 -x 16 -n 1`
+else
+    PASSWORD="${PASSWORD0}"
+fi
+
+if [ x"${PASSWORD}" = "x" ]; then
+    echo "Usage:"
+    echo "$0 USER [PASSWORD]"
+    exit 1
+fi
+
+adduser -D -H -S "${USER_NAME}"
+echo "${USER_NAME}:${PASSWORD}" | chpasswd -c SHA256
+
+echo "tg://socks?&user=${USER_NAME}&pass=${PASSWORD}&port=${PORT}&server="
+
